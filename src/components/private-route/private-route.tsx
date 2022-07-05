@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../contants/const';
 
 type PrivateRouteProps = {
 	authorizationStatus: AuthorizationStatus;
@@ -8,7 +8,6 @@ type PrivateRouteProps = {
 
 function PrivateRoute(props: PrivateRouteProps): JSX.Element {
 	const { authorizationStatus, children } = props;
-
 	return authorizationStatus === AuthorizationStatus.Auth ? (
 		children
 	) : (

@@ -1,4 +1,4 @@
-function Login() {
+function Signup() {
 	return (
 		<main id="content" role="main" className="main pt-0">
 			<div className="container-fluid px-3">
@@ -90,21 +90,24 @@ function Login() {
 							<form className="js-validate needs-validation">
 								<div className="text-center">
 									<div className="mb-5">
-										<h1 className="display-5">Sign in</h1>
+										<h1 className="display-5">
+											Create your account
+										</h1>
 										<p>
-											Don't have an account yet?
+											Already have an account?{' '}
 											<a
 												className="link"
-												href="authentication-signup-cover.html"
+												href="./authentication-login-cover.html"
 											>
-												Sign up here
+												Sign in here
 											</a>
 										</p>
 									</div>
+
 									<div className="d-grid mb-4">
 										<a
 											className="btn btn-white btn-lg"
-											href="authentication-login-cover.html#"
+											href="/"
 										>
 											<span className="d-flex justify-content-center align-items-center">
 												<img
@@ -112,18 +115,60 @@ function Login() {
 													src="https://htmlstream-assets.s3.ap-south-1.amazonaws.com/assets/svg/brands/google-icon.svg"
 													alt="Description"
 												/>
-												Sign in with Google
+												Sign up with Google
 											</span>
 										</a>
 									</div>
+
 									<span className="divider-center text-muted mb-4">
 										OR
 									</span>
 								</div>
+
+								<label
+									className="form-label"
+									htmlFor="fullNameSrEmail"
+								>
+									Full name
+								</label>
+
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="mb-4">
+											<input
+												type="text"
+												className="form-control form-control-lg"
+												name="fullName"
+												id="fullNameSrEmail"
+												placeholder="Mark"
+												aria-label="Mark"
+												required
+											/>
+											<span className="invalid-feedback">
+												Please enter your first name.
+											</span>
+										</div>
+									</div>
+
+									<div className="col-sm-6">
+										<div className="mb-4">
+											<input
+												type="text"
+												className="form-control form-control-lg"
+												placeholder="Williams"
+												aria-label="Williams"
+												required
+											/>
+											<span className="invalid-feedback">
+												Please enter your last name.
+											</span>
+										</div>
+									</div>
+								</div>
 								<div className="mb-4">
 									<label
 										className="form-label"
-										htmlFor="signinSrEmail"
+										htmlFor="signupSrEmail"
 									>
 										Your email
 									</label>
@@ -131,9 +176,9 @@ function Login() {
 										type="email"
 										className="form-control form-control-lg"
 										name="email"
-										id="signinSrEmail"
-										placeholder="email@address.com"
-										aria-label="email@address.com"
+										id="signupSrEmail"
+										placeholder="Markwilliams@site.com"
+										aria-label="Markwilliams@site.com"
 										required
 									/>
 									<span className="invalid-feedback">
@@ -142,22 +187,15 @@ function Login() {
 								</div>
 								<div className="mb-4">
 									<label
-										className="form-label w-100"
+										className="form-label"
 										htmlFor="signupSrPassword"
 									>
-										<span className="d-flex justify-content-between align-items-center">
-											<span>Password</span>
-											<a
-												className="form-label-link mb-0"
-												href="authentication-reset-password-cover.html"
-											>
-												Forgot Password?
-											</a>
-										</span>
+										Password
 									</label>
+
 									<div
 										className="input-group input-group-merge"
-										data-hs-validation-validate-class
+										data-hs-validation-validate-className=""
 									>
 										<input
 											type="password"
@@ -166,20 +204,55 @@ function Login() {
 											id="signupSrPassword"
 											placeholder="8+ characters required"
 											aria-label="8+ characters required"
+											minLength={8}
+											required
 										/>
 										<a
-											id="changePassTarget"
-											className="input-group-append input-group-text"
+											className="js-toggle-password-target-1 input-group-append input-group-text"
 											href="/"
 										>
-											<i
-												id="changePassIcon"
-												className="bi-eye"
-											/>
+											<i className="js-toggle-password-show-icon-1 bi-eye-slash" />
 										</a>
 									</div>
+
 									<span className="invalid-feedback">
-										Please enter a valid password.
+										Your password is invalid. Please try
+										again.
+									</span>
+								</div>
+								<div className="mb-4">
+									<label
+										className="form-label"
+										htmlFor="signupSrConfirmPassword"
+									>
+										Confirm password
+									</label>
+
+									<div
+										className="input-group input-group-merge"
+										data-hs-validation-validate-className=""
+									>
+										<input
+											type="password"
+											className="js-toggle-password form-control form-control-lg"
+											name="confirmPassword"
+											id="signupSrConfirmPassword"
+											placeholder="8+ characters required"
+											aria-label="8+ characters required"
+											required
+											minLength={8}
+										/>
+										<a
+											className="js-toggle-password-target-2 input-group-append input-group-text"
+											href="/"
+										>
+											<i className="js-toggle-password-show-icon-2 bi-eye-slash" />
+										</a>
+									</div>
+
+									<span className="invalid-feedback">
+										Password does not match the confirm
+										password.
 									</span>
 								</div>
 								<div className="form-check mb-4">
@@ -188,20 +261,32 @@ function Login() {
 										type="checkbox"
 										value=""
 										id="termsCheckbox"
+										required
 									/>
 									<label
 										className="form-check-label"
 										htmlFor="termsCheckbox"
 									>
-										Remember me
+										I accept the{' '}
+										<a href="/">Terms and Conditions</a>
 									</label>
+									<span className="invalid-feedback">
+										Please accept our Terms and Conditions.
+									</span>
 								</div>
-								<div className="d-grid">
+								<div className="d-grid gap-2">
 									<button
 										type="submit"
 										className="btn btn-primary btn-lg"
 									>
-										Sign in
+										Create an account
+									</button>
+									<button
+										type="submit"
+										className="btn btn-link"
+									>
+										or Start your 30-day trial{' '}
+										<i className="bu-chevron-right" />
 									</button>
 								</div>
 							</form>
@@ -213,4 +298,4 @@ function Login() {
 	);
 }
 
-export default Login;
+export default Signup;

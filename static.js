@@ -7,11 +7,13 @@ const app = express();
 app.use(express.static(__dirname));
 app.use(express.static(path.resolve(__dirname, 'dist')));
 
+app.get('/test', (req, res) => {
+	res.send('this is it');
+});
+
 app.get('*', (req, res) => {
 	res.sendFile(
-		path.join(
-			__dirname, 'dist', 'index.a10b28eb029f227007b6.min.html'
-		)
+		path.join(__dirname, 'dist', 'index.a10b28eb029f227007b6.min.html')
 	);
 });
 

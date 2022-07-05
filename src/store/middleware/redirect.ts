@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Middleware } from '@reduxjs/toolkit';
-import { AsyncActionType, ReducerType } from '../../const';
+import { AsyncActionType, ReducerType } from '../../contants/const';
 import browserHistory from '../../utils/browser-history';
 import { redirectToRoute } from '../action';
 import { rootReducer } from '../root-reducer';

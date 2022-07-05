@@ -1,20 +1,19 @@
+// import { AuthorizationStatus } from '../../contants/const';
+import { AuthorizationStatus } from '../../contants/const';
 import { useAppSelector } from '../../hooks/use-redux';
-import { isCheckAuth } from '../../game';
-
+import { getAuthorizationStatus } from '../../store/slices/selectors';
 import Default from '../../views/layouts/default';
 import Loading from '../loading/loading';
 
-import { getAuthorizationStatus } from '../../store/slices/user-process/selectors';
-import { getLoadedDataStatus } from '../../store/slices/game-data/selectors';
+const isCheckAuth = (authorizationStatus: AuthorizationStatus): boolean =>
+	authorizationStatus === AuthorizationStatus.Unknown;
 
 function App(): JSX.Element {
 	const authorizationStatus = useAppSelector(getAuthorizationStatus);
-	const isDataLoaded = useAppSelector(getLoadedDataStatus);
 
-	if (isCheckAuth(authorizationStatus) || !isDataLoaded) {
+	if (isCheckAuth(authorizationStatus)) {
 		return <Loading />;
 	}
-
 	return <Default authStatus={authorizationStatus} />;
 }
 
