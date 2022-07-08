@@ -1,3 +1,11 @@
+export const TIMEOUT_SHOW_ERROR = 2000;
+
+export enum HttpCode {
+	BAD_REQUEST = 400,
+	UNAUTHORIZED = 401,
+	NOT_FOUND = 404,
+}
+
 export enum AppRoute {
 	Login = '/login',
 	Signup = '/signup',
@@ -30,6 +38,7 @@ export enum ActionType {
 export enum AsyncActionType {
 	FetchQuestions = '/fetchQuestions',
 	CheckAuth = '/checkAuth',
+	Signin = '/asSignin',
 	Login = '/asLogin',
 	Logout = '/asLogout',
 	ClearError = '/clearError',
@@ -42,6 +51,8 @@ export enum AuthTokens {
 }
 
 export enum APIRoute {
-	Login = '/login',
-	Logout = '/logout',
+	Signin = '/auth/register',
+	Login = '/auth/login',
+	Logout = '/auth/logout',
+	RefreshToken = '/auth/refresh-tokens',
 }

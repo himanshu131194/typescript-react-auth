@@ -1,4 +1,34 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { FormEvent, useRef } from 'react';
+import { useAppDispatch } from '../../../hooks/use-redux';
+import { signinAction } from '../../../services/api-actions';
+import { IRegisterRequest } from '../../../types/auth.types';
+
 function Signup() {
+	const fullName = useRef<HTMLInputElement | null>(null);
+	const email = useRef<HTMLInputElement | null>(null);
+	const password = useRef<HTMLInputElement | null>(null);
+	const confirmPassword = useRef<HTMLInputElement | null>(null);
+	const dispatch = useAppDispatch();
+
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+		evt.preventDefault();
+		if (
+			fullName.current !== null &&
+			email.current !== null &&
+			password.current !== null &&
+			confirmPassword.current !== null
+		) {
+			const accountData: IRegisterRequest = {
+				name: fullName.current.value,
+				email: email.current.value,
+				password: password.current.value,
+			};
+			dispatch(signinAction(accountData));
+		}
+	};
+
 	return (
 		<main id="content" role="main" className="main pt-0">
 			<div className="container-fluid px-3">
@@ -87,7 +117,10 @@ function Signup() {
 							className="w-100 content-space-t-4 content-space-t-lg-2 content-space-b-1"
 							style={{ maxWidth: '25rem' }}
 						>
-							<form className="js-validate needs-validation">
+							<form
+								className="js-validate needs-validation"
+								onSubmit={handleSubmit}
+							>
 								<div className="text-center">
 									<div className="mb-5">
 										<h1 className="display-5">
@@ -124,46 +157,26 @@ function Signup() {
 										OR
 									</span>
 								</div>
-
-								<label
-									className="form-label"
-									htmlFor="fullNameSrEmail"
-								>
-									Full name
-								</label>
-
-								<div className="row">
-									<div className="col-sm-6">
-										<div className="mb-4">
-											<input
-												type="text"
-												className="form-control form-control-lg"
-												name="fullName"
-												id="fullNameSrEmail"
-												placeholder="Mark"
-												aria-label="Mark"
-												required
-											/>
-											<span className="invalid-feedback">
-												Please enter your first name.
-											</span>
-										</div>
-									</div>
-
-									<div className="col-sm-6">
-										<div className="mb-4">
-											<input
-												type="text"
-												className="form-control form-control-lg"
-												placeholder="Williams"
-												aria-label="Williams"
-												required
-											/>
-											<span className="invalid-feedback">
-												Please enter your last name.
-											</span>
-										</div>
-									</div>
+								<div className="mb-4">
+									<label
+										className="form-label"
+										htmlFor="fullNameSrEmail"
+									>
+										Full Name
+									</label>
+									<input
+										ref={fullName}
+										type="text"
+										className="form-control form-control-lg"
+										name="fullName"
+										id="fullNameSrEmail"
+										placeholder="Mark Williams"
+										aria-label="Mark Williams"
+										required
+									/>
+									<span className="invalid-feedback">
+										Please enter your first name.
+									</span>
 								</div>
 								<div className="mb-4">
 									<label
@@ -173,6 +186,7 @@ function Signup() {
 										Your email
 									</label>
 									<input
+										ref={email}
 										type="email"
 										className="form-control form-control-lg"
 										name="email"
@@ -193,11 +207,9 @@ function Signup() {
 										Password
 									</label>
 
-									<div
-										className="input-group input-group-merge"
-										data-hs-validation-validate-className=""
-									>
+									<div className="input-group input-group-merge">
 										<input
+											ref={password}
 											type="password"
 											className="js-toggle-password form-control form-control-lg"
 											name="password"
@@ -228,11 +240,9 @@ function Signup() {
 										Confirm password
 									</label>
 
-									<div
-										className="input-group input-group-merge"
-										data-hs-validation-validate-className=""
-									>
+									<div className="input-group input-group-merge">
 										<input
+											ref={confirmPassword}
 											type="password"
 											className="js-toggle-password form-control form-control-lg"
 											name="confirmPassword"

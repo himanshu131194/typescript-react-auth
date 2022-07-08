@@ -1,4 +1,9 @@
+import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../../hooks/use-redux';
+import { logoutAction } from '../../../services/api-actions';
+
 function Welcome() {
+	const dispatch = useAppDispatch();
 	return (
 		<body className="footer-offset" style={{ opacity: 1 }}>
 			<header
@@ -31,14 +36,18 @@ function Welcome() {
 						>
 							<ul className="navbar-nav">
 								<li className="nav-item">
-									<a
+									<Link
 										className="nav-link "
-										href="./documentation/index.html"
 										data-placement="left"
+										onClick={() => {
+											// eslint-disable-next-line
+											dispatch(logoutAction());
+										}}
+										to="/"
 									>
 										<i className="bi-book dropdown-item-icon" />
-										Docs
-									</a>
+										logout
+									</Link>
 								</li>
 							</ul>
 						</div>

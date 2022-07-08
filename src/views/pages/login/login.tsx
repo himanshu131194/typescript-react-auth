@@ -1,4 +1,27 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { FormEvent, useRef } from 'react';
+import { useAppDispatch } from '../../../hooks/use-redux';
+import { loginAction } from '../../../services/api-actions';
+import { AuthData } from '../../../types/auth-data';
+
 function Login() {
+	localStorage.setItem('rememberMe', 'false');
+	const loginRef = useRef<HTMLInputElement | null>(null);
+	const password = useRef<HTMLInputElement | null>(null);
+	const dispatch = useAppDispatch();
+
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+		evt.preventDefault();
+		if (loginRef.current !== null && password.current !== null) {
+			const authData: AuthData = {
+				login: loginRef.current.value,
+				password: password.current.value,
+			};
+			dispatch(loginAction(authData));
+		}
+	};
+
 	return (
 		<main id="content" role="main" className="main pt-0">
 			<div className="container-fluid px-3">
@@ -87,7 +110,10 @@ function Login() {
 							className="w-100 content-space-t-4 content-space-t-lg-2 content-space-b-1"
 							style={{ maxWidth: '25rem' }}
 						>
-							<form className="js-validate needs-validation">
+							<form
+								className="js-validate needs-validation"
+								onSubmit={handleSubmit}
+							>
 								<div className="text-center">
 									<div className="mb-5">
 										<h1 className="display-5">Sign in</h1>
@@ -128,6 +154,7 @@ function Login() {
 										Your email
 									</label>
 									<input
+										ref={loginRef}
 										type="email"
 										className="form-control form-control-lg"
 										name="email"
@@ -160,6 +187,7 @@ function Login() {
 										data-hs-validation-validate-class
 									>
 										<input
+											ref={password}
 											type="password"
 											className="js-toggle-password form-control form-control-lg"
 											name="password"
@@ -188,6 +216,19 @@ function Login() {
 										type="checkbox"
 										value=""
 										id="termsCheckbox"
+										onChange={(e) => {
+											if (e.target.checked) {
+												localStorage.setItem(
+													'rememberMe',
+													'true'
+												);
+											} else {
+												localStorage.setItem(
+													'rememberMe',
+													'false'
+												);
+											}
+										}}
 									/>
 									<label
 										className="form-check-label"

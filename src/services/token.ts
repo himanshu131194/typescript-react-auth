@@ -1,4 +1,6 @@
-const AUTH_TOKEN_KEY_NAME = 'guess-melody-token';
+import { AccessAndRefreshTokens } from '../types/auth.types';
+
+const AUTH_TOKEN_KEY_NAME = 'refreshToken';
 
 export type Token = string;
 
@@ -9,8 +11,20 @@ export const getToken = (): Token => {
 	return token ?? '';
 };
 
-export const saveToken = (token: Token): void =>
-	localStorage.setItem(AUTH_TOKEN_KEY_NAME, token);
+export const saveToken = (tokens: AccessAndRefreshTokens): void => {
+	const rememberMe = localStorage.getItem('rememberMe');
+	if (rememberMe === 'true') {
+		localStorage.setItem('accessToken', tokens.access.token);
+		localStorage.setItem('refreshToken', tokens.refresh.token);
+	} else {
+		sessionStorage.setItem('accessToken', tokens.access.token);
+		sessionStorage.setItem('refreshToken', tokens.refresh.token);
+	}
+};
 
-export const dropToken = (): void =>
-	localStorage.removeItem(AUTH_TOKEN_KEY_NAME);
+export const dropToken = (): void => {
+	localStorage.removeItem('accessToken');
+	localStorage.removeItem('refreshToken');
+	sessionStorage.removeItem('accessToken');
+	sessionStorage.removeItem('refreshToken');
+};
