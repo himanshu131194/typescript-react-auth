@@ -28,3 +28,14 @@ export interface IUpdateUserRequest {
 }
 
 export type IDeleteUserRequest = Pick<IUser, 'id'>;
+
+// type Roles = 'teacher' | 'student' | 'admin' | 'parent';
+
+export interface ITutionUser {
+	firstName: string;
+	lastName: string;
+	email: string;
+	phone: string;
+	role: string;
+	isAgreedChecked: Boolean;
+}
