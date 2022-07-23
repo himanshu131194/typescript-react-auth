@@ -9,19 +9,19 @@ const APP_PORT = process.env.APP_PORT || 1488;
 const SERVE = process.env.SERVE || false;
 
 const pluginService = (SERVE) => {
-	const collector =  [
+	const collector = [
 		new HtmlWebpackPlugin({
 			filename: '[name].html',
-			template: './public/index.html'
+			template: './public/index.html',
 		}),
 		new MiniCssExtractPlugin({
 			filename: './styles/[name].css',
-			chunkFilename: 'styles/[id].css'
+			chunkFilename: 'styles/[id].css',
 		}),
 		new webpack.SourceMapDevToolPlugin({
 			filename: './[file].map',
-			exclude: [/runtime.*.*/ ,/vendors.*.*/]
-		})
+			exclude: [/runtime.*.*/, /vendors.*.*/],
+		}),
 	];
 
 	if (SERVE) {
@@ -29,17 +29,18 @@ const pluginService = (SERVE) => {
 	}
 
 	return collector;
-}
+};
 
 module.exports = {
 	mode: 'development',
+	devtool: 'eval-source-map',
 	devServer: {
 		port: APP_PORT,
-		historyApiFallback: true
+		historyApiFallback: true,
 	},
 	plugins: pluginService(SERVE),
 	output: {
-		filename: './scripts/[name].js'
+		filename: './scripts/[name].js',
 	},
 	module: {
 		rules: [
@@ -47,8 +48,8 @@ module.exports = {
 				test: /\.(png|svg|jpg|jpeg|gif)$/i,
 				type: 'asset/resource',
 				generator: {
-					filename: 'images/[name][ext][query]'
-				}
+					filename: 'images/[name][ext][query]',
+				},
 			},
 			// {
 			// 	test: /\.svg/,
@@ -61,8 +62,8 @@ module.exports = {
 				test: /\.(woff|woff2|eot|ttf|otf)$/i,
 				type: 'asset/resource',
 				generator: {
-					filename: 'fonts/[name][ext][query]'
-				}
+					filename: 'fonts/[name][ext][query]',
+				},
 			},
 			{
 				test: /\.[jt]sx?$/,
@@ -71,11 +72,13 @@ module.exports = {
 					{
 						loader: require.resolve('babel-loader'),
 						options: {
-							plugins: [SERVE && require.resolve('react-refresh/babel')].filter(Boolean),
-						}
-					}
-				]
-			}
-		]
-	}
-}
+							plugins: [
+								SERVE && require.resolve('react-refresh/babel'),
+							].filter(Boolean),
+						},
+					},
+				],
+			},
+		],
+	},
+};

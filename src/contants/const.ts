@@ -1,5 +1,6 @@
 export const TIMEOUT_SHOW_ERROR = 2000;
-
+export const ASSETS_BASE_URL =
+	'https://htmlstream.com/preview/front-dashboard-v2.0/';
 export enum HttpCode {
 	BAD_REQUEST = 400,
 	UNAUTHORIZED = 401,
@@ -51,7 +52,7 @@ export enum AuthTokens {
 }
 
 export enum APIRoute {
-	Signin = '/auth/register',
+	Signin = '/tutions/create',
 	Login = '/auth/login',
 	Logout = '/auth/logout',
 	RefreshToken = '/auth/refresh-tokens',

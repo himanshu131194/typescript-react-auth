@@ -32,10 +32,27 @@ export type IDeleteUserRequest = Pick<IUser, 'id'>;
 // type Roles = 'teacher' | 'student' | 'admin' | 'parent';
 
 export interface ITutionUser {
+	id: string;
 	firstName: string;
 	lastName: string;
 	email: string;
 	phone: string;
 	role: string;
-	isAgreedChecked: Boolean;
+	isEmailVerified: false;
+	isPhoneVerified: false;
+	isAgreedChecked: boolean;
 }
+
+export type ITutionUserRequest = Omit<
+	ITutionUser,
+	'id' | 'isEmailVerified' | 'isPhoneVerified' | 'isAgreedChecked'
+>;
+
+export type ITutionUserForm = Omit<
+	ITutionUser,
+	'id' | 'isEmailVerified' | 'isPhoneVerified'
+>;
+
+export type ITutionUserResponse = {
+	user: Omit<ITutionUser, 'id' | 'isEmailVerified' | 'isPhoneVerified'>;
+};

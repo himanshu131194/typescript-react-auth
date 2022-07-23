@@ -15,32 +15,42 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 
 module.exports = {
 	entry: {
-		index: './src/index.tsx'
+		index: './src/index.tsx',
 	},
+	devtool: 'eval-source-map',
 	plugins: [
 		new FriendlyErrorsWebpackPlugin(),
 		new webpack.DefinePlugin(envKeys),
 		new ForkTsCheckerWebpackPlugin(),
 		new ESLintPlugin({
-			extensions: ['js', 'jsx', 'ts', 'tsx']
+			extensions: ['js', 'jsx', 'ts', 'tsx'],
 		}),
-		new StylelintPlugin()
+		new StylelintPlugin(),
 	],
 	output: {
 		path: path.resolve(__dirname, '../../dist'),
 		clean: true,
-		pathinfo: false
+		pathinfo: false,
 	},
 	resolve: {
-		extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.scss', '.sass'],
+		extensions: [
+			'',
+			'.js',
+			'.jsx',
+			'.ts',
+			'.tsx',
+			'.json',
+			'.css',
+			'.scss',
+			'.sass',
+		],
 		alias: {
-			"@src": path.resolve(__dirname, '../../src'),
-			"@public": path.resolve(__dirname, '../../public'),
-			"@images": path.resolve(__dirname, '../../public/images'),
-			"@styles": path.resolve(__dirname, '../../public/styles')
-		}
+			'@src': path.resolve(__dirname, '../../src'),
+			'@public': path.resolve(__dirname, '../../public'),
+			'@images': path.resolve(__dirname, '../../public/images'),
+			'@styles': path.resolve(__dirname, '../../public/styles'),
+		},
 	},
-	devtool: false,
 	optimization: {
 		moduleIds: 'deterministic',
 		runtimeChunk: 'single',
@@ -49,33 +59,30 @@ module.exports = {
 				vendor: {
 					test: /[\\/]node_modules[\\/]/,
 					name: 'vendors',
-					chunks: 'all'
-				}
-			}
-		}
+					chunks: 'all',
+				},
+			},
+		},
 	},
 	module: {
 		rules: [
 			{
 				test: /\.(css|s[ac]ss)$/i,
-				use: [MiniCssExtractPlugin.loader,
+				use: [
+					MiniCssExtractPlugin.loader,
 					{
-						loader: 'css-loader'
+						loader: 'css-loader',
 					},
 					{
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: {
-								plugins: [
-									[
-										'postcss-preset-env', {}
-									]
-								]
-							}
-						}
+								plugins: [['postcss-preset-env', {}]],
+							},
+						},
 					},
-					{ loader: 'sass-loader' }
-				]
+					{ loader: 'sass-loader' },
+				],
 			},
 			{
 				test: /\.(js|jsx)$/,
@@ -83,26 +90,30 @@ module.exports = {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
-						cacheDirectory: true
-					}
-				}
+						presets: [
+							'@babel/preset-env',
+							'@babel/preset-react',
+							'@babel/preset-typescript',
+						],
+						cacheDirectory: true,
+					},
+				},
 			},
 			{
 				test: /\.(ts|tsx)$/,
 				loader: 'ts-loader',
 				exclude: /node_modules/,
 				options: {
-					transpileOnly : true
-				}
+					transpileOnly: true,
+				},
 			},
 			{
 				test: /\.svg/,
 				use: {
-				  loader: "svg-url-loader",
-				  options: {}
-				}
-			}
-		]
-	}
-}
+					loader: 'svg-url-loader',
+					options: {},
+				},
+			},
+		],
+	},
+};

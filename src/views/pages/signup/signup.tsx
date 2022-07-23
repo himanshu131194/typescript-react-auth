@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable */
 import { FormEvent, useRef } from 'react';
 import { useAppDispatch } from '../../../hooks/use-redux';
-import { signinAction } from '../../../services/api-actions';
-import { IRegisterRequest } from '../../../types/auth.types';
+// import { signinAction } from '../../../services/api-actions';
+// import { IRegisterRequest } from '../../../types/auth.types';
 
 function Signup() {
 	const fullName = useRef<HTMLInputElement | null>(null);
@@ -13,20 +14,20 @@ function Signup() {
 	const dispatch = useAppDispatch();
 
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-		evt.preventDefault();
-		if (
-			fullName.current !== null &&
-			email.current !== null &&
-			password.current !== null &&
-			confirmPassword.current !== null
-		) {
-			const accountData: IRegisterRequest = {
-				name: fullName.current.value,
-				email: email.current.value,
-				password: password.current.value,
-			};
-			dispatch(signinAction(accountData));
-		}
+		// evt.preventDefault();
+		// if (
+		// 	fullName.current !== null &&
+		// 	email.current !== null &&
+		// 	password.current !== null &&
+		// 	confirmPassword.current !== null
+		// ) {
+		// 	const accountData: IRegisterRequest = {
+		// 		name: fullName.current.value,
+		// 		email: email.current.value,
+		// 		password: password.current.value,
+		// 	};
+		// 	dispatch(signinAction(accountData));
+		// }
 	};
 
 	return (

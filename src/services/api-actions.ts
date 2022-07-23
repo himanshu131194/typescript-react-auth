@@ -1,4 +1,6 @@
 /* eslint-disable import/no-cycle */
+/* eslint-disable */
+
 import { AxiosInstance } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
@@ -13,11 +15,11 @@ import { AppDispatch, AppStore, store } from '../store/store';
 import { requireAuthorization } from '../store/slices/user-process';
 import { AuthData } from '../types/auth-data';
 import {
-	IRegisterRequest,
 	IUserWithTokens,
 	// IRefreshTokenRequest,
 	// ILogoutRequest,
 } from '../types/auth.types';
+import { ITutionUserRequest, ITutionUserResponse } from '../types/users.types';
 import { saveToken, getToken, dropToken } from './token';
 import { setError } from '../store/slices/error/error';
 import { errorHandle } from './error-handle';
@@ -58,7 +60,7 @@ export const checkAuthAction = createAsyncThunk<
 
 export const signinAction = createAsyncThunk<
 	void,
-	IRegisterRequest,
+	ITutionUserRequest,
 	{
 		dispatch: AppDispatch;
 		state: AppStore;
@@ -66,16 +68,22 @@ export const signinAction = createAsyncThunk<
 	}
 >(
 	`${ReducerType.User}${AsyncActionType.Signin}`,
-	async ({ name, email, password }, { dispatch, extra: api }) => {
+	async (
+		{ firstName, lastName, email, phone, role },
+		{ dispatch, extra: api }
+	) => {
 		try {
-			await api.post<IUserWithTokens>(APIRoute.Signin, {
-				name,
+			await api.post<ITutionUserResponse>(APIRoute.Signin, {
+				firstName,
+				lastName,
 				email,
-				password,
+				phone,
+				role,
 			});
 			dispatch(requireAuthorization(AuthorizationStatus.Auth));
 			dispatch(redirectToRoute(AppRoute.Login));
 		} catch (error) {
+			console.log(error);
 			errorHandle(error);
 			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
 		}
