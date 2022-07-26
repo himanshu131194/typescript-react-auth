@@ -5,17 +5,11 @@ type Size = {
 	height: string;
 };
 
-function Loading({ width, height }: Size): JSX.Element {
+function Loading({ width = '2rem', height = '2rem' }: Size): JSX.Element {
 	return (
-		<p className="text-center vertical-center">
-			<div
-				className="spinner-grow"
-				role="status"
-				style={{ width, height }}
-			>
-				<span className="visually-hidden">Loading...</span>
-			</div>
-		</p>
+		<div className="spinner-grow" role="status" style={{ width, height }}>
+			<span className="visually-hidden">Loading...</span>
+		</div>
 	);
 }
 

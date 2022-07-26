@@ -11,7 +11,7 @@ import { setError } from '../store/slices/error/error';
 import { store } from '../store/store';
 
 import { ErrorType } from '../types/error';
-import { clearErrorAction } from './api-actions';
+// import { clearErrorAction } from './api-actions';
 
 export const errorHandle = (error: ErrorType): void => {
 	if (!request.isAxiosError(error)) {
@@ -20,7 +20,7 @@ export const errorHandle = (error: ErrorType): void => {
 
 	const handleError = (message: string) => {
 		store.dispatch(setError(message));
-		store.dispatch(clearErrorAction());
+		// store.dispatch(clearErrorAction());
 	};
 
 	const { response } = error;

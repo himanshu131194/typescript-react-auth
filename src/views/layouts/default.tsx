@@ -14,6 +14,14 @@ function Default({ authStatus }: DefaultProps) {
 		<Routes>
 			<Route path={AppRoute.Login} element={<Login />} />
 			<Route path={AppRoute.Signup} element={<Signup />} />
+			{/* <Route
+				path={AppRoute.Home}
+				element={
+					<PrivateRoute authorizationStatus={authStatus}>
+						<Welcome />
+					</PrivateRoute>
+				}
+			/> */}
 			<Route
 				path={AppRoute.Home}
 				element={

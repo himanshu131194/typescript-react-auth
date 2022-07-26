@@ -1,6 +1,7 @@
 export const TIMEOUT_SHOW_ERROR = 2000;
 export const ASSETS_BASE_URL =
 	'https://htmlstream.com/preview/front-dashboard-v2.0/';
+
 export enum HttpCode {
 	BAD_REQUEST = 400,
 	UNAUTHORIZED = 401,
@@ -15,6 +16,7 @@ export enum AppRoute {
 }
 
 export enum AuthorizationStatus {
+	OTP = 'OTP',
 	Auth = 'AUTH',
 	NoAuth = 'NO_AUTH',
 	Unknown = 'UNKNOWN',
@@ -24,6 +26,7 @@ export enum ReducerType {
 	Process = 'Process',
 	Data = 'data',
 	User = 'user',
+	Auth = 'auth',
 	Error = 'error',
 }
 
@@ -33,6 +36,7 @@ export enum ActionType {
 	resetGame = 'reset',
 	loadQuestions = 'loadQuestions',
 	requireAuthorization = 'requireAuthorization',
+	setUserInformation = 'setUserInformation',
 	setError = 'setError',
 }
 
@@ -53,7 +57,7 @@ export enum AuthTokens {
 
 export enum APIRoute {
 	Signin = '/tutions/create',
-	Login = '/auth/login',
+	Login = '/tutions/verify-otp',
 	Logout = '/auth/logout',
-	RefreshToken = '/auth/refresh-tokens',
+	RefreshToken = '/tutions/refresh-tokens',
 }

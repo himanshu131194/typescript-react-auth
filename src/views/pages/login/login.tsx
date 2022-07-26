@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable */
+
 import { FormEvent, useRef } from 'react';
 import { useAppDispatch } from '../../../hooks/use-redux';
 import { loginAction } from '../../../services/api-actions';
@@ -18,7 +20,7 @@ function Login() {
 				login: loginRef.current.value,
 				password: password.current.value,
 			};
-			dispatch(loginAction(authData));
+			// dispatch(loginAction(authData));
 		}
 	};
 

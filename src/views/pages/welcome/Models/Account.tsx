@@ -1,29 +1,219 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable */
 import { Formik } from 'formik';
-import { useState } from 'react';
+import {
+	FormEvent,
+	KeyboardEventHandler,
+	MutableRefObject,
+	useRef,
+} from 'react';
 import * as yup from 'yup';
 import Modal from 'react-bootstrap/Modal';
-import { useAppDispatch } from '../../../../hooks/use-redux';
-import { signinAction } from '../../../../services/api-actions';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/use-redux';
+import { loginAction, signinAction } from '../../../../services/api-actions';
 import {
-	ITutionUserForm,
-	ITutionUserRequest,
-} from '../../../../types/users.types';
-import { ASSETS_BASE_URL } from '../../../../contants/const';
+	IRegistrationForm,
+	IRegisterRequest,
+	OtpLoginTypeRequest,
+} from '../../../../types/auth.types';
+
+import {
+	ASSETS_BASE_URL,
+	AuthorizationStatus,
+} from '../../../../contants/const';
+import {
+	getAuthorizationStatus,
+	getUserId,
+} from '../../../../store/slices/selectors';
+import Loading from '../../../../components/loading/loading';
+import { useState } from 'react';
 
 type DefaultProps = {
 	show: boolean;
 	handleClose: () => void;
 };
+
+type OtpProps = {
+	codeOne: MutableRefObject<HTMLInputElement | null> | null;
+	codeTwo: MutableRefObject<HTMLInputElement | null> | null;
+	codeThree: MutableRefObject<HTMLInputElement | null> | null;
+	codeFour: MutableRefObject<HTMLInputElement | null> | null;
+};
+
 type CoverImages = 'create' | 'otp';
 const CoverImagesUrls: Record<CoverImages, string> = {
 	create: 'assets/svg/illustrations/oc-looking-for-answers.svg',
 	otp: 'assets/svg/illustrations/oc-unlock.svg',
 };
 
-function Account({ show, handleClose }: DefaultProps) {
-	const [steps, setSteps] = useState<CoverImages>('create');
+function OtpModel({ codeOne, codeTwo, codeThree, codeFour }: OtpProps) {
+	const [isSubmiting, setIsSubmiting] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
+	const userId = useAppSelector(getUserId);
+	const keyUp: KeyboardEventHandler<HTMLInputElement> = (evt) => {
+		const accepted: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+		const currentValue = evt.currentTarget.value;
+		if (accepted.indexOf(+currentValue) == -1) {
+			evt.currentTarget.value = '';
+			return;
+		}
+		if (currentValue.length === 1) {
+			if (evt.currentTarget.name === 'code1' && codeTwo)
+				codeTwo.current?.focus();
+			if (evt.currentTarget.name === 'code2' && codeThree)
+				codeThree.current?.focus();
+			if (evt.currentTarget.name === 'code3' && codeFour)
+				codeFour.current?.focus();
+			if (evt.currentTarget.name === 'code4' && codeOne)
+				codeOne.current?.focus();
+		}
+	};
+
+	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+		evt.preventDefault();
+		setIsSubmiting(true);
+		if (
+			codeOne?.current?.value &&
+			codeTwo?.current?.value &&
+			codeThree?.current?.value &&
+			codeFour?.current?.value
+		) {
+			const otpValue =
+				codeOne?.current?.value +
+				codeTwo?.current?.value +
+				codeThree?.current?.value +
+				codeFour?.current?.value;
+			dispatch(
+				loginAction({
+					user: userId,
+					otp: otpValue,
+				} as OtpLoginTypeRequest)
+			);
+		}
+	};
+	return (
+		<div className="card card-lg">
+			<div className="card-body text-center">
+				<div className="mb-5">
+					<h1 className="display-5">2-step Verification</h1>
+					<p className="mb-0">
+						We sent a verification code to your email.
+					</p>
+					<p>Enter the code from the email in the field below.</p>
+				</div>
+				<form onSubmit={handleSubmit}>
+					<div className="row gx-2 gx-sm-3">
+						<div className="col">
+							<div className="mb-4">
+								<input
+									ref={codeOne}
+									type="number"
+									className="form-control form-control-single-number"
+									name="code1"
+									id="twoStepVerificationSrCodeInput1"
+									placeholder=""
+									aria-label=""
+									maxLength={1}
+									autoComplete="off"
+									autoCapitalize="off"
+									spellCheck="false"
+									onKeyUp={keyUp}
+								/>
+							</div>
+						</div>
+						<div className="col">
+							<div className="mb-4">
+								<input
+									ref={codeTwo}
+									type="number"
+									className="form-control form-control-single-number"
+									name="code2"
+									id="twoStepVerificationSrCodeInput2"
+									placeholder=""
+									aria-label=""
+									maxLength={1}
+									autoComplete="off"
+									autoCapitalize="off"
+									spellCheck="false"
+									onKeyUp={keyUp}
+								/>
+							</div>
+						</div>
+						<div className="col">
+							<div className="mb-4">
+								<input
+									ref={codeThree}
+									type="number"
+									className="form-control form-control-single-number"
+									name="code3"
+									id="twoStepVerificationSrCodeInput3"
+									placeholder=""
+									aria-label=""
+									maxLength={1}
+									autoComplete="off"
+									autoCapitalize="off"
+									spellCheck="false"
+									onKeyUp={keyUp}
+								/>
+							</div>
+						</div>
+						<div className="col">
+							<div className="mb-4">
+								<input
+									ref={codeFour}
+									type="number"
+									className="form-control form-control-single-number"
+									name="code4"
+									id="twoStepVerificationSrCodeInput4"
+									placeholder=""
+									aria-label=""
+									maxLength={1}
+									autoComplete="off"
+									autoCapitalize="off"
+									spellCheck="false"
+									onKeyUp={keyUp}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className="d-grid mb-3">
+						<button
+							disabled={isSubmiting}
+							type="submit"
+							className="btn btn-primary btn-lg"
+						>
+							{isSubmiting ? (
+								<>
+									Loading...
+									{` `}
+									<span>
+										<Loading width="1rem" height="1rem" />
+									</span>
+								</>
+							) : (
+								'Verify my account'
+							)}
+						</button>
+					</div>
+				</form>
+				<div className="text-center">
+					<p>
+						Haven't received it? <a href="/">Resend a new code.</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function Account({ show, handleClose }: DefaultProps) {
+	const code1 = useRef<HTMLInputElement | null>(null);
+	const code2 = useRef<HTMLInputElement | null>(null);
+	const code3 = useRef<HTMLInputElement | null>(null);
+	const code4 = useRef<HTMLInputElement | null>(null);
+	const dispatch = useAppDispatch();
+	const authorizationStatus = useAppSelector(getAuthorizationStatus);
 	const initialFormValues = {
 		firstName: '',
 		lastName: '',
@@ -31,7 +221,7 @@ function Account({ show, handleClose }: DefaultProps) {
 		phone: '',
 		role: '',
 		isAgreedChecked: false,
-	} as ITutionUserForm;
+	} as IRegistrationForm;
 
 	const validationSchema = yup.object().shape({
 		firstName: yup.string().required('First name is required'),
@@ -43,6 +233,7 @@ function Account({ show, handleClose }: DefaultProps) {
 		phone: yup
 			.string()
 			.matches(
+				/* eslint-disable-next-line */
 				/(^(\+91[\-\s]?)?(\91[\-\s]?)?[0]?(91)?[123456789]\d{9}$)/,
 				'Phone number is not valid'
 			)
@@ -54,8 +245,8 @@ function Account({ show, handleClose }: DefaultProps) {
 		isAgreedChecked: yup.boolean().oneOf([true]).required(),
 	});
 
-	const submitHandler = (values: ITutionUserForm) => {
-		const tutionData: ITutionUserRequest = {
+	const submitHandler = (values: IRegistrationForm) => {
+		const tutionData: IRegisterRequest = {
 			firstName: values.firstName,
 			lastName: values.lastName,
 			email: values.email,
@@ -64,97 +255,6 @@ function Account({ show, handleClose }: DefaultProps) {
 		};
 		dispatch(signinAction(tutionData));
 	};
-
-	const OtpModel: React.FC = () => (
-		<div className="card card-lg">
-			<div className="card-body text-center">
-				<div className="mb-5">
-					<h1 className="display-5">2-step Verification</h1>
-					<p className="mb-0">
-						We sent a verification code to your email.
-					</p>
-					<p>Enter the code from the email in the field below.</p>
-				</div>
-				<div className="row gx-2 gx-sm-3">
-					<div className="col">
-						<div className="mb-4">
-							<input
-								type="text"
-								className="form-control form-control-single-number"
-								name="code1"
-								id="twoStepVerificationSrCodeInput1"
-								placeholder=""
-								aria-label=""
-								maxLength={1}
-								autoComplete="off"
-								autoCapitalize="off"
-								spellCheck="false"
-								autoFocus={true}
-							/>
-						</div>
-					</div>
-					<div className="col">
-						<div className="mb-4">
-							<input
-								type="text"
-								className="form-control form-control-single-number"
-								name="code2"
-								id="twoStepVerificationSrCodeInput2"
-								placeholder=""
-								aria-label=""
-								maxLength={1}
-								autoComplete="off"
-								autoCapitalize="off"
-								spellCheck="false"
-							/>
-						</div>
-					</div>
-					<div className="col">
-						<div className="mb-4">
-							<input
-								type="text"
-								className="form-control form-control-single-number"
-								name="code3"
-								id="twoStepVerificationSrCodeInput3"
-								placeholder=""
-								aria-label=""
-								maxLength={1}
-								autoComplete="off"
-								autoCapitalize="off"
-								spellCheck="false"
-							/>
-						</div>
-					</div>
-					<div className="col">
-						<div className="mb-4">
-							<input
-								type="text"
-								className="form-control form-control-single-number"
-								name="code4"
-								id="twoStepVerificationSrCodeInput4"
-								placeholder=""
-								aria-label=""
-								maxLength={1}
-								autoComplete="off"
-								autoCapitalize="off"
-								spellCheck="false"
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="d-grid mb-3">
-					<button type="submit" className="btn btn-primary btn-lg">
-						Verify my account
-					</button>
-				</div>
-				<div className="text-center">
-					<p>
-						Haven't received it? <a href="#">Resend a new code.</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	);
 
 	return (
 		<Modal show={show} onHide={handleClose}>
@@ -171,13 +271,18 @@ function Account({ show, handleClose }: DefaultProps) {
 					<div className="col-md-6 mb-4 mb-md-0">
 						<img
 							className="img-fluid"
-							src={`${ASSETS_BASE_URL}${CoverImagesUrls[steps]}`}
+							src={ASSETS_BASE_URL + CoverImagesUrls.create}
 							alt="Description"
 						/>
 					</div>
 					<div className="col-md-6">
-						{steps === 'otp' ? (
-							<OtpModel />
+						{authorizationStatus === AuthorizationStatus.OTP ? (
+							<OtpModel
+								codeOne={code1}
+								codeTwo={code2}
+								codeThree={code3}
+								codeFour={code4}
+							/>
 						) : (
 							<Formik
 								initialValues={initialFormValues}
@@ -189,6 +294,7 @@ function Account({ show, handleClose }: DefaultProps) {
 									errors,
 									handleChange,
 									handleSubmit,
+									isSubmitting,
 								}) => {
 									return (
 										<form
@@ -208,17 +314,16 @@ function Account({ show, handleClose }: DefaultProps) {
 																</label>
 																<input
 																	type="text"
-																	className={
-																		'form-control form-control-lg' +
-																		(values
+																	className={`form-control form-control-lg${
+																		values
 																			.firstName
 																			.length >
 																		0
 																			? ' is-valid'
 																			: errors.firstName
 																			? ' is-invalid'
-																			: '')
-																	}
+																			: ''
+																	}`}
 																	name="firstName"
 																	id="firstName"
 																	value={
@@ -247,17 +352,16 @@ function Account({ show, handleClose }: DefaultProps) {
 																</label>
 																<input
 																	type="text"
-																	className={
-																		'form-control form-control-lg' +
-																		(values
+																	className={`form-control form-control-lg${
+																		values
 																			.lastName
 																			.length >
 																		0
 																			? ' is-valid'
 																			: errors.lastName
 																			? ' is-invalid'
-																			: '')
-																	}
+																			: ''
+																	}`}
 																	name="lastName"
 																	id="lastName"
 																	value={
@@ -286,14 +390,13 @@ function Account({ show, handleClose }: DefaultProps) {
 														</label>
 														<input
 															type="email"
-															className={
-																'form-control form-control-lg' +
-																(errors.email
+															className={`form-control form-control-lg${
+																errors.email
 																	? ' is-invalid'
 																	: values.email
 																	? ' is-valid'
-																	: '')
-															}
+																	: ''
+															}`}
 															name="email"
 															id="email"
 															value={values.email}
@@ -319,17 +422,16 @@ function Account({ show, handleClose }: DefaultProps) {
 																</label>
 																<input
 																	type="text"
-																	className={
-																		'form-control form-control-lg' +
-																		(errors.phone
+																	className={`form-control form-control-lg${
+																		errors.phone
 																			? ' is-invalid'
 																			: values
 																					.phone
 																					.length >
 																			  0
 																			? ' is-valid'
-																			: '')
-																	}
+																			: ''
+																	}`}
 																	name="phone"
 																	id="phone"
 																	value={
@@ -356,17 +458,16 @@ function Account({ show, handleClose }: DefaultProps) {
 																	Role
 																</label>
 																<select
-																	className={
-																		'form-select' +
-																		(values
+																	className={`form-select${
+																		values
 																			.role
 																			.length >
 																		0
 																			? ' is-valid'
 																			: errors.role
 																			? ' is-invalid'
-																			: '')
-																	}
+																			: ''
+																	}`}
 																	id="role"
 																	name="role"
 																	value={
@@ -404,14 +505,13 @@ function Account({ show, handleClose }: DefaultProps) {
 													<div className="form-check mb-4">
 														<input
 															type="checkbox"
-															className={
-																'form-check-input' +
-																(errors.isAgreedChecked
+															className={`form-check-input${
+																errors.isAgreedChecked
 																	? ' is-invalid'
 																	: values.isAgreedChecked
 																	? ' is-valid'
-																	: '')
-															}
+																	: ''
+															}`}
 															id="isAgreedChecked"
 															name="isAgreedChecked"
 															onChange={
@@ -453,12 +553,27 @@ function Account({ show, handleClose }: DefaultProps) {
 																disabled={
 																	Object.keys(
 																		errors
-																	).length > 0
+																	).length >
+																		0 ||
+																	isSubmitting
 																}
 																type="submit"
 																className="btn btn-primary btn-lg"
 															>
-																Create Tution
+																{isSubmitting ? (
+																	<>
+																		Loading...
+																		{` `}
+																		<span>
+																			<Loading
+																				width="1rem"
+																				height="1rem"
+																			/>
+																		</span>
+																	</>
+																) : (
+																	'Create tution'
+																)}
 															</button>
 														</div>
 													</div>

@@ -1,6 +1,4 @@
 /* eslint-disable import/no-cycle */
-/* eslint-disable */
-
 import { AxiosInstance } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
@@ -12,18 +10,20 @@ import {
 	AppRoute,
 } from '../contants/const';
 import { AppDispatch, AppStore, store } from '../store/store';
-import { requireAuthorization } from '../store/slices/user-process';
-import { AuthData } from '../types/auth-data';
+import { requireAuthorization } from '../store/slices/auth/auth-process';
+import { setUserInformation } from '../store/slices/user/user-process';
 import {
+	IRegisterRequest,
+	IRegisterResponse,
 	IUserWithTokens,
-	// IRefreshTokenRequest,
-	// ILogoutRequest,
+	OtpLoginTypeRequest,
 } from '../types/auth.types';
-import { ITutionUserRequest, ITutionUserResponse } from '../types/users.types';
-import { saveToken, getToken, dropToken } from './token';
+// import { saveToken, getToken, dropToken } from './token';
 import { setError } from '../store/slices/error/error';
 import { errorHandle } from './error-handle';
 import { redirectToRoute } from '../store/action';
+import { getToken, saveToken } from './token';
+// import { redirectToRoute } from '../store/action';
 
 export const clearErrorAction = createAsyncThunk(
 	`${ReducerType.Error}${AsyncActionType.ClearError}`,
@@ -41,17 +41,18 @@ export const checkAuthAction = createAsyncThunk<
 		extra: AxiosInstance;
 	}
 >(
-	`${ReducerType.User}${AsyncActionType.CheckAuth}`,
+	`${ReducerType.Auth}${AsyncActionType.CheckAuth}`,
 	async (_arg, { dispatch, extra: api }) => {
 		const refreshToken = getToken();
 		try {
 			const {
-				data: { tokens },
+				data: { tokens, user },
 			} = await api.post<IUserWithTokens>(APIRoute.RefreshToken, {
 				refreshToken,
 			});
 			saveToken(tokens);
 			dispatch(requireAuthorization(AuthorizationStatus.Auth));
+			dispatch(setUserInformation(user));
 		} catch (error) {
 			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
 		}
@@ -60,7 +61,7 @@ export const checkAuthAction = createAsyncThunk<
 
 export const signinAction = createAsyncThunk<
 	void,
-	ITutionUserRequest,
+	IRegisterRequest,
 	{
 		dispatch: AppDispatch;
 		state: AppStore;
@@ -73,17 +74,18 @@ export const signinAction = createAsyncThunk<
 		{ dispatch, extra: api }
 	) => {
 		try {
-			await api.post<ITutionUserResponse>(APIRoute.Signin, {
+			const {
+				data: { user },
+			} = await api.post<IRegisterResponse>(APIRoute.Signin, {
 				firstName,
 				lastName,
 				email,
 				phone,
 				role,
 			});
-			dispatch(requireAuthorization(AuthorizationStatus.Auth));
-			dispatch(redirectToRoute(AppRoute.Login));
+			dispatch(requireAuthorization(AuthorizationStatus.OTP));
+			dispatch(setUserInformation(user));
 		} catch (error) {
-			console.log(error);
 			errorHandle(error);
 			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
 		}
@@ -92,24 +94,25 @@ export const signinAction = createAsyncThunk<
 
 export const loginAction = createAsyncThunk<
 	void,
-	AuthData,
+	OtpLoginTypeRequest,
 	{
 		dispatch: AppDispatch;
 		state: AppStore;
 		extra: AxiosInstance;
 	}
 >(
-	`${ReducerType.User}${AsyncActionType.Login}`,
-	async ({ login: email, password }, { dispatch, extra: api }) => {
+	`${ReducerType.Auth}${AsyncActionType.Login}`,
+	async ({ user, otp }, { dispatch, extra: api }) => {
 		try {
 			const {
-				data: { tokens },
+				data: { user: userData, tokens },
 			} = await api.post<IUserWithTokens>(APIRoute.Login, {
-				email,
-				password,
+				user,
+				otp,
 			});
 			saveToken(tokens);
 			dispatch(requireAuthorization(AuthorizationStatus.Auth));
+			dispatch(setUserInformation(userData));
 			dispatch(redirectToRoute(AppRoute.Home));
 		} catch (error) {
 			errorHandle(error);
@@ -118,26 +121,26 @@ export const loginAction = createAsyncThunk<
 	}
 );
 
-export const logoutAction = createAsyncThunk<
-	void,
-	undefined,
-	{
-		dispatch: AppDispatch;
-		state: AppStore;
-		extra: AxiosInstance;
-	}
->(
-	`${ReducerType.User}${AsyncActionType.Logout}`,
-	async (_arg, { dispatch, extra: api }) => {
-		try {
-			const refreshToken = getToken();
-			await api.post<void>(APIRoute.Logout, {
-				refreshToken,
-			});
-			dropToken();
-			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
-		} catch (error) {
-			errorHandle(error);
-		}
-	}
-);
+// export const logoutAction = createAsyncThunk<
+// 	void,
+// 	undefined,
+// 	{
+// 		dispatch: AppDispatch;
+// 		state: AppStore;
+// 		extra: AxiosInstance;
+// 	}
+// >(
+// 	`${ReducerType.User}${AsyncActionType.Logout}`,
+// 	async (_arg, { dispatch, extra: api }) => {
+// 		try {
+// 			const refreshToken = getToken();
+// 			await api.post<void>(APIRoute.Logout, {
+// 				refreshToken,
+// 			});
+// 			dropToken();
+// 			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+// 		} catch (error) {
+// 			errorHandle(error);
+// 		}
+// 	}
+// );

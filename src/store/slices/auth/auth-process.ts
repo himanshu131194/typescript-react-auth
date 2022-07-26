@@ -3,18 +3,18 @@ import {
 	ActionType,
 	AuthorizationStatus,
 	ReducerType,
-} from '../../contants/const';
+} from '../../../contants/const';
 
-export type UserProcess = {
+export type AuthStatus = {
 	authorizationStatus: AuthorizationStatus;
 };
 
-const initialState: UserProcess = {
+const initialState: AuthStatus = {
 	authorizationStatus: AuthorizationStatus.Unknown,
 };
 
-export const userProcess = createSlice({
-	name: ReducerType.User,
+export const authProcess = createSlice({
+	name: ReducerType.Auth,
 	initialState,
 	reducers: {
 		[ActionType.requireAuthorization]: (
@@ -26,4 +26,4 @@ export const userProcess = createSlice({
 	},
 });
 
-export const { requireAuthorization } = userProcess.actions;
+export const { requireAuthorization } = authProcess.actions;

@@ -1,22 +1,46 @@
 import IDoc from '../definitions/IDoc';
 import IQueryFilter from '../definitions/IDoc';
 
+// export interface IUser extends IDoc {
+// 	id: string;
+// 	name: string;
+// 	role: string;
+// 	email: string;
+// 	password: string;
+// 	isEmailVerified: boolean;
+// }
+
 export interface IUser extends IDoc {
 	id: string;
-	name: string;
-	role: string;
+	firstName: string;
+	lastName: string;
 	email: string;
-	password: string;
-	isEmailVerified: boolean;
+	phone: string;
+	role: string;
+	isEmailVerified: false;
+	isPhoneVerified: false;
+	isAgreedChecked: boolean;
 }
 
-export type IUserWithoutPassword = Omit<IUser, 'password'>;
+// export type IUserWithoutPassword = Omit<IUser, 'password'>;
 
-export type ICreateUserRequest = Omit<IUser, 'id' | 'isEmailVerified'>;
+export type ICreateUserRequest = Omit<
+	IUser,
+	'id' | 'isEmailVerified' | 'isPhoneVerified' | 'isAgreedChecked'
+>;
 
-export type IUserFilterFields = Pick<IUser, 'name' | 'role'>;
+export type IUserRegistrationForm = Omit<
+	IUser,
+	'id' | 'isEmailVerified' | 'isPhoneVerified'
+>;
 
-export type IGetUsersRequestParams = Partial<IUserFilterFields & IQueryFilter>;
+export type IUserResponse = {
+	user: Omit<IUser, 'isAgreedChecked'>;
+};
+
+// export type IUserFilterFields = Pick<IUser, 'name' | 'role'>;
+
+// export type IGetUsersRequestParams = Partial<IUserFilterFields & IQueryFilter>;
 
 export type IGetSingleUserRequest = Pick<IUser, 'id'>;
 
@@ -48,11 +72,13 @@ export type ITutionUserRequest = Omit<
 	'id' | 'isEmailVerified' | 'isPhoneVerified' | 'isAgreedChecked'
 >;
 
-export type ITutionUserForm = Omit<
-	ITutionUser,
-	'id' | 'isEmailVerified' | 'isPhoneVerified'
->;
+// export type ITutionUserForm = Omit<
+// 	ITutionUser,
+// 	'id' | 'isEmailVerified' | 'isPhoneVerified'
+// >;
 
 export type ITutionUserResponse = {
-	user: Omit<ITutionUser, 'id' | 'isEmailVerified' | 'isPhoneVerified'>;
+	user: Omit<ITutionUser, 'isAgreedChecked'>;
 };
+
+export type ITutionUserResponseOnly = Omit<ITutionUser, 'isAgreedChecked'>;

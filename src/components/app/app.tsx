@@ -12,7 +12,11 @@ function App(): JSX.Element {
 	const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
 	if (isCheckAuth(authorizationStatus)) {
-		return <Loading width="10rem" height="10rem" />;
+		return (
+			<p className="text-center vertical-center">
+				<Loading width="10rem" height="10rem" />
+			</p>
+		);
 	}
 	return <Default authStatus={authorizationStatus} />;
 }

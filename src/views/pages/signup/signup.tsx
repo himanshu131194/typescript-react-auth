@@ -11,7 +11,6 @@ function Signup() {
 	const email = useRef<HTMLInputElement | null>(null);
 	const password = useRef<HTMLInputElement | null>(null);
 	const confirmPassword = useRef<HTMLInputElement | null>(null);
-	const dispatch = useAppDispatch();
 
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
 		// evt.preventDefault();

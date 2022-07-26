@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-
 // import '../public/styles/index.scss';
 import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
