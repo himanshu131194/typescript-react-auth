@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable */
-import { Formik } from 'formik';
 import {
+	useState,
 	FormEvent,
 	KeyboardEventHandler,
 	MutableRefObject,
 	useRef,
 } from 'react';
 import * as yup from 'yup';
+import { Formik } from 'formik';
 import Modal from 'react-bootstrap/Modal';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/use-redux';
 import { loginAction, signinAction } from '../../../../services/api-actions';
@@ -18,16 +18,10 @@ import {
 	OtpLoginTypeRequest,
 } from '../../../../types/auth.types';
 
-import {
-	ASSETS_BASE_URL,
-	AuthorizationStatus,
-} from '../../../../contants/const';
-import {
-	getAuthorizationStatus,
-	getUserId,
-} from '../../../../store/slices/selectors';
+import { ASSETS_BASE_URL, ModalStatus } from '../../../../contants/const';
+import { getModalStatus, getUserId } from '../../../../store/slices/selectors';
 import Loading from '../../../../components/loading/loading';
-import { useState } from 'react';
+import Login from './Login';
 
 type DefaultProps = {
 	show: boolean;
@@ -54,8 +48,8 @@ function OtpModel({ codeOne, codeTwo, codeThree, codeFour }: OtpProps) {
 	const keyUp: KeyboardEventHandler<HTMLInputElement> = (evt) => {
 		const accepted: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 		const currentValue = evt.currentTarget.value;
-		if (accepted.indexOf(+currentValue) == -1) {
-			evt.currentTarget.value = '';
+		if (accepted.indexOf(+currentValue) === -1) {
+			evt.currentTarget.value = ''; // eslint-disable-line
 			return;
 		}
 		if (currentValue.length === 1) {
@@ -80,10 +74,10 @@ function OtpModel({ codeOne, codeTwo, codeThree, codeFour }: OtpProps) {
 			codeFour?.current?.value
 		) {
 			const otpValue =
-				codeOne?.current?.value +
-				codeTwo?.current?.value +
-				codeThree?.current?.value +
-				codeFour?.current?.value;
+				codeOne?.current?.value + // eslint-disable-line
+				codeTwo?.current?.value + // eslint-disable-line
+				codeThree?.current?.value + // eslint-disable-line
+				codeFour?.current?.value; // eslint-disable-line
 			dispatch(
 				loginAction({
 					user: userId,
@@ -213,7 +207,7 @@ function Account({ show, handleClose }: DefaultProps) {
 	const code3 = useRef<HTMLInputElement | null>(null);
 	const code4 = useRef<HTMLInputElement | null>(null);
 	const dispatch = useAppDispatch();
-	const authorizationStatus = useAppSelector(getAuthorizationStatus);
+	const modalStatus = useAppSelector(getModalStatus);
 	const initialFormValues = {
 		firstName: '',
 		lastName: '',
@@ -276,14 +270,17 @@ function Account({ show, handleClose }: DefaultProps) {
 						/>
 					</div>
 					<div className="col-md-6">
-						{authorizationStatus === AuthorizationStatus.OTP ? (
+						{modalStatus === ModalStatus.Otp && (
 							<OtpModel
 								codeOne={code1}
 								codeTwo={code2}
 								codeThree={code3}
 								codeFour={code4}
 							/>
-						) : (
+						)}
+						{modalStatus === ModalStatus.LogIn && <Login />}
+
+						{modalStatus === ModalStatus.SignUp && (
 							<Formik
 								initialValues={initialFormValues}
 								validationSchema={validationSchema}

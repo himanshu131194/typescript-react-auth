@@ -9,3 +9,6 @@ export const getUserId = (state: AppStore): string | undefined =>
 
 export const getErrorStatus = (state: AppStore): string =>
 	state[ReducerType.Error].error;
+
+export const getModalStatus = (state: AppStore): string =>
+	state[ReducerType.Modal].modalStatus;

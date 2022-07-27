@@ -16,9 +16,15 @@ export enum AppRoute {
 }
 
 export enum AuthorizationStatus {
-	OTP = 'OTP',
 	Auth = 'AUTH',
 	NoAuth = 'NO_AUTH',
+	Unknown = 'UNKNOWN',
+}
+
+export enum ModalStatus {
+	Otp = 'OTP',
+	SignUp = 'SINGUP',
+	LogIn = 'LOGIN',
 	Unknown = 'UNKNOWN',
 }
 
@@ -28,6 +34,7 @@ export enum ReducerType {
 	User = 'user',
 	Auth = 'auth',
 	Error = 'error',
+	Modal = 'modal',
 }
 
 export enum ActionType {
@@ -36,6 +43,7 @@ export enum ActionType {
 	resetGame = 'reset',
 	loadQuestions = 'loadQuestions',
 	requireAuthorization = 'requireAuthorization',
+	updateModal = 'updateModal',
 	setUserInformation = 'setUserInformation',
 	setError = 'setError',
 }
@@ -45,6 +53,7 @@ export enum AsyncActionType {
 	CheckAuth = '/checkAuth',
 	Signin = '/asSignin',
 	Login = '/asLogin',
+	GenerateOtp = '/otp',
 	Logout = '/asLogout',
 	ClearError = '/clearError',
 	RedirectToRoute = '/redirectToRoute',
@@ -58,6 +67,7 @@ export enum AuthTokens {
 export enum APIRoute {
 	Signin = '/tutions/create',
 	Login = '/tutions/verify-otp',
+	GenerateOtp = '/tutions/otp',
 	Logout = '/auth/logout',
 	RefreshToken = '/tutions/refresh-tokens',
 }

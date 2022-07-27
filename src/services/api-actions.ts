@@ -5,6 +5,7 @@ import {
 	ReducerType,
 	AsyncActionType,
 	AuthorizationStatus,
+	ModalStatus,
 	APIRoute,
 	TIMEOUT_SHOW_ERROR,
 	AppRoute,
@@ -16,6 +17,7 @@ import {
 	IRegisterRequest,
 	IRegisterResponse,
 	IUserWithTokens,
+	LoginTypeRequest,
 	OtpLoginTypeRequest,
 } from '../types/auth.types';
 // import { saveToken, getToken, dropToken } from './token';
@@ -23,6 +25,8 @@ import { setError } from '../store/slices/error/error';
 import { errorHandle } from './error-handle';
 import { redirectToRoute } from '../store/action';
 import { getToken, saveToken } from './token';
+import { IUserResponse } from '../types/users.types';
+import { updateModal } from '../store/slices/modal/modal-process';
 // import { redirectToRoute } from '../store/action';
 
 export const clearErrorAction = createAsyncThunk(
@@ -83,10 +87,11 @@ export const signinAction = createAsyncThunk<
 				phone,
 				role,
 			});
-			dispatch(requireAuthorization(AuthorizationStatus.OTP));
 			dispatch(setUserInformation(user));
+			dispatch(updateModal(ModalStatus.Otp));
 		} catch (error) {
 			errorHandle(error);
+			dispatch(updateModal(ModalStatus.SignUp));
 			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
 		}
 	}
@@ -121,6 +126,32 @@ export const loginAction = createAsyncThunk<
 	}
 );
 
+export const loginWithPhoneOrMobileAction = createAsyncThunk<
+	void,
+	LoginTypeRequest,
+	{
+		dispatch: AppDispatch;
+		state: AppStore;
+		extra: AxiosInstance;
+	}
+>(
+	`${ReducerType.Auth}${AsyncActionType.GenerateOtp}`,
+	async ({ phone }, { dispatch, extra: api }) => {
+		try {
+			const {
+				data: { user },
+			} = await api.post<IUserResponse>(APIRoute.GenerateOtp, {
+				phone,
+			} as LoginTypeRequest);
+			dispatch(setUserInformation(user));
+			dispatch(updateModal(ModalStatus.Otp));
+		} catch (error) {
+			errorHandle(error);
+			dispatch(updateModal(ModalStatus.LogIn));
+			dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+		}
+	}
+);
 // export const logoutAction = createAsyncThunk<
 // 	void,
 // 	undefined,

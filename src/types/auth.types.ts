@@ -46,6 +46,18 @@ export type OtpLoginTypeRequest = {
 	otp: string;
 };
 
+export type LoginTypeRequest = Omit<
+	IUser,
+	| 'id'
+	| 'isEmailVerified'
+	| 'isPhoneVerified'
+	| 'isAgreedChecked'
+	| 'email'
+	| 'firstName'
+	| 'lastName'
+	| 'role'
+>;
+
 // export type IUserWithoutPassword = Omit<IUser, 'password'>;
 
 // export interface ILoginResponse {

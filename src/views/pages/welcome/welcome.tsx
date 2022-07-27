@@ -1,15 +1,23 @@
 import './welcome.scss';
 import { useState } from 'react';
 import Account from './Models/Account';
+import { updateModal } from '../../../store/slices/modal/modal-process';
+import { ModalStatus } from '../../../contants/const';
+import { store } from '../../../store/store';
 // import { Link } from 'react-router-dom';
 // import { useAppDispatch } from '../../../hooks/use-redux';
 // import { logoutAction } from '../../../services/api-actions';
 
 function Welcome() {
-	// const dispatch = useAppDispatch();
 	const [show, setShow] = useState<boolean>(false);
-	const handleShow = (e: { preventDefault: () => void }): void => {
+	const handleSignupShow = (e: { preventDefault: () => void }): void => {
 		e.preventDefault();
+		store.dispatch(updateModal(ModalStatus.SignUp));
+		setShow(true);
+	};
+	const handleLoginShow = (e: { preventDefault: () => void }): void => {
+		e.preventDefault();
+		store.dispatch(updateModal(ModalStatus.LogIn));
 		setShow(true);
 	};
 	const handleClose = (): void => {
@@ -93,6 +101,7 @@ function Welcome() {
 									<a
 										className="btn btn-outline-primary btn-transition"
 										href="../demo-real-estate/property-seller.html"
+										onClick={handleLoginShow}
 									>
 										Login
 									</a>
@@ -101,7 +110,7 @@ function Welcome() {
 									<a
 										className="btn btn-primary btn-transition"
 										href="../demo-real-estate/property-seller.html"
-										onClick={handleShow}
+										onClick={handleSignupShow}
 									>
 										Get started
 									</a>
