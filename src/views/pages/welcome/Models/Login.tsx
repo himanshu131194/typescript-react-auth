@@ -6,6 +6,9 @@ import { loginWithPhoneOrMobileAction } from '../../../../services/api-actions';
 import { LoginTypeRequest } from '../../../../types/auth.types';
 import Loading from '../../../../components/loading/loading';
 import { useAppDispatch } from '../../../../hooks/use-redux';
+import { store } from '../../../../store/store';
+import { updateModal } from '../../../../store/slices/modal/modal-process';
+import { ModalStatus } from '../../../../contants/const';
 
 function Login() {
 	// const [isSubmiting, setIsSubmiting] = useState<boolean>(false);
@@ -154,6 +157,14 @@ function Login() {
 										<a
 											className="btn btn-link"
 											href="./authentication-login-cover.html"
+											onClick={(e) => {
+												e.preventDefault();
+												store.dispatch(
+													updateModal(
+														ModalStatus.SignUp
+													)
+												);
+											}}
 										>
 											<i className="bi-chevron-left"></i>{' '}
 											Back to Sign in

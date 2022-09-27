@@ -22,6 +22,8 @@ import { ASSETS_BASE_URL, ModalStatus } from '../../../../contants/const';
 import { getModalStatus, getUserId } from '../../../../store/slices/selectors';
 import Loading from '../../../../components/loading/loading';
 import Login from './Login';
+import { store } from '../../../../store/store';
+import { updateModal } from '../../../../store/slices/modal/modal-process';
 
 type DefaultProps = {
 	show: boolean;
@@ -540,6 +542,16 @@ function Account({ show, handleClose }: DefaultProps) {
 																<a
 																	className="link"
 																	href="../page-login.html"
+																	onClick={(
+																		e
+																	) => {
+																		e.preventDefault();
+																		store.dispatch(
+																			updateModal(
+																				ModalStatus.LogIn
+																			)
+																		);
+																	}}
 																>
 																	Log In
 																</a>
