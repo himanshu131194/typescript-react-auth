@@ -11,6 +11,7 @@ export enum HttpCode {
 export enum AppRoute {
 	Login = '/login',
 	Signup = '/signup',
+	Plans = '/plans',
 	Home = '/',
 	NotFound = '*',
 }

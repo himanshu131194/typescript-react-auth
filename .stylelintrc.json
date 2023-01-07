@@ -1,12 +1,8 @@
 {
-	"plugins": [
-		"stylelint-scss",
-		"stylelint-prettier"
-	],
+	"plugins": ["stylelint-scss", "stylelint-prettier"],
 	"extends": [
 		"stylelint-config-standard-scss",
 		"stylelint-config-recommended-scss",
-		"stylelint-order-htmlacademy",
 		"stylelint-prettier/recommended",
 		"stylelint-config-prettier"
 	],
